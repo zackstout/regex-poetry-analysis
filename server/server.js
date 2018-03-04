@@ -9,7 +9,7 @@ var allStars = [];
 
 var pg = require('pg');
 var config = {
-  database: 'stars-again', // the name of the database
+  database: 'poems', // the name of the database
   host: 'localhost', // where is your database?
   port: 5432, // the port number for you database, 5432 is the default
   max: 10, // how many connections at one time
