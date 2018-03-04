@@ -4,7 +4,7 @@
 $(document).ready(function() {
   var authors = [];
 
-  // Getvar authors = [];
+  // Get authors:
   $.ajax({
     type: 'get',
     url: "http://poetrydb.org/authors"
@@ -14,7 +14,7 @@ $(document).ready(function() {
       var author = auth.slice(auth.lastIndexOf(' ') + 1);
       authors.push(author);
     });
-    console.log(authors);
+    // console.log(authors);
 
     var author, count;
     authors.forEach(function(auth) {
@@ -25,24 +25,33 @@ $(document).ready(function() {
         // console.log(res);
         res.forEach(function(poem) {
           // console.log(poem);
+
+          $.ajax({
+            type: "POST",
+            url: "/poems",
+            data: poem
+          });
           count = 0;
+          lines = [];
           author = poem.author;
           poem.lines.forEach(function(line) {
-            var regex = new RegExp(/at/);
+            var regex = new RegExp(/man/);
             // console.log(regex);
             if ( regex.test(line) ) {
             // if (line.includes('the') || line.includes('The')) {
               count ++;
+              lines.push(line);
             }
           });
         });
         // console.log(author, count);
-        $('#list').append('<li> Author: ' + author + ' <br>   Count: ' + count + '</li>');
+        $('#list').append('<li> Author: ' + author + ' <br>Count: ' + count + '<br>Lines: ' + lines + '</li>');
       }).catch(function(err) {
         console.log(err);
       });
     });
-
+  }).catch(function(err) {
+    console.log(err);
   });
 
   // Get number of a given word in that author's works:

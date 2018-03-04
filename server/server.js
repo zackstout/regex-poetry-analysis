@@ -18,8 +18,49 @@ var config = {
 
 var pool = new pg.Pool(config);
 
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({extended: true, limit: '50mb', parameterLimit: 1000000}));
 app.use(express.static('server/public'));
+
+app.post('/poems', function(req, res) {
+  // console.log(req.body);
+  var poem = req.body;
+  pool.connect(function (errorConnectingToDb, db, done) {
+    if (errorConnectingToDb) {
+      // There was an error and no connection was made
+      console.log('Error connecting', errorConnectingToDb);
+    } else {
+      // We connected to the db!!!!! pool -1
+      // console.log(star, "HI THERE");
+      var queryText = 'INSERT INTO "poems" ("author", "title", "linecount") VALUES ($1, $2, $3) RETURNING id as id;';
+      db.query(queryText, [poem.author, poem.title, parseInt(poem.linecount)], function (errorMakingQuery, result) {
+        // We have received an error or result at this point
+
+        console.log(result.rows[0].id);
+        poem.lines.forEach(function(line, index) {
+          var queryText2 = 'INSERT INTO "lines" ("poem_id", "line", "lineNo") VALUES ($1, $2, $3);';
+          db.query(queryText2, [result.rows[0].id, line, index], function(err, resp) {
+            if (err) {
+              console.log(err);
+            } else {
+              if (index == poem.lines.length - 1) {
+                done();
+                res.sendStatus(201);
+              }
+            }
+          });
+        });
+
+        // done(); // pool +1
+        if (errorMakingQuery) {
+          console.log('Error making query', errorMakingQuery);
+        } else {
+          // Send back success!
+          // res.sendStatus(201);
+        }
+      }); // END QUERY
+    }
+  }); // END POOL
+});
 
 app.listen(port, function() {
   console.log('thx for listening on channel ', port);
