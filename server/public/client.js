@@ -2,16 +2,22 @@
 // var count = 0;
 
 $(document).ready(function() {
+  var authors = [];
 
-  // Get list of authors:
+  // Getvar authors = [];
   $.ajax({
     type: 'get',
     url: "http://poetrydb.org/authors"
   }).done(function(data) {
-    console.log(data);
+    // console.log(data);
+    data.authors.forEach(function(auth) {
+      var author = auth.slice(auth.lastIndexOf(' ') + 1);
+      authors.push(author);
+    });
+    console.log(authors);
 
     var author, count;
-    data.authors.forEach(function(auth) {
+    authors.forEach(function(auth) {
       $.ajax({
         type: 'get',
         url: "http://poetrydb.org/author/" + auth
@@ -22,16 +28,16 @@ $(document).ready(function() {
           count = 0;
           author = poem.author;
           poem.lines.forEach(function(line) {
-            var regex = new RegExp('love');
+            var regex = new RegExp(/at/);
             // console.log(regex);
-            // if ( regex.test(line) ) {
-            if (line.includes('love') || line.includes('Love')) {
+            if ( regex.test(line) ) {
+            // if (line.includes('the') || line.includes('The')) {
               count ++;
             }
           });
         });
         // console.log(author, count);
-        $('#list').append('<li> Author: ' + author + '    Count: ' + count + '</li>');
+        $('#list').append('<li> Author: ' + author + ' <br>   Count: ' + count + '</li>');
       }).catch(function(err) {
         console.log(err);
       });
