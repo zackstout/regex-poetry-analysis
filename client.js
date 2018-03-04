@@ -1,25 +1,37 @@
 
-var count = 0;
-
+// var count = 0;
 
 $(document).ready(function() {
-
-
-
 
   // Get list of authors:
   $.ajax({
     type: 'get',
     url: "http://poetrydb.org/authors"
   }).done(function(data) {
-    console.log(data);
+    // console.log(data);
 
+    var author, count;
     data.authors.forEach(function(auth) {
       $.ajax({
         type: 'get',
         url: "http://poetrydb.org/author/" + auth
       }).done(function(res) {
-        console.log(res);
+        // console.log(res);
+        res.forEach(function(poem) {
+          // console.log(poem);
+          count = 0;
+          author = poem.author;
+          poem.lines.forEach(function(line) {
+            var regex = new RegExp('love');
+            // console.log(regex);
+            // if ( regex.test(line) ) {
+            if (line.includes('love') || line.includes('Love')) {
+              count ++;
+            }
+          });
+        });
+        // console.log(author, count);
+        $('#list').append('<li> Author: ' + author + '    Count: ' + count + '</li>');
       }).catch(function(err) {
         console.log(err);
       });
