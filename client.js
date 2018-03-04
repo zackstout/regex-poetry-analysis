@@ -8,7 +8,7 @@ $(document).ready(function() {
     type: 'get',
     url: "http://poetrydb.org/authors"
   }).done(function(data) {
-    // console.log(data);
+    console.log(data);
 
     var author, count;
     data.authors.forEach(function(auth) {
