@@ -9,6 +9,11 @@ Learning regex by doing some poetry analysis using [PoetryDB](http://poetrydb.or
 - [x] Enter a term and see how frequently it appears across all writings of all authors, grouped by author, expressed as a percentage of their number of lines in the database.
 
 ## Next Steps:
-- [ ] Let users pick a word to map among all authors.
 - [ ] Group authors in categories so users can slice by category (e.g. Romantic).
 - [ ] Run a sentiment analysis on each author.
+- [ ] Determine distribution of positive vs negative sentiment for each author by poem
+- [ ] Make list of natural imagery regexs, test against authors
+- [ ] Track number of times author uses "I"
+- [ ] track times lines end with a punctuation mark vs enjambment
+- [ ] Scrape wikipedia for birthdates of authors to group them by epoch
+- [ ] Map author against lines in the DB to get a visual intuition for the database
