@@ -21,23 +21,18 @@ var pool = new pg.Pool(config);
 app.use(bodyParser.urlencoded({extended: true, limit: '50mb', parameterLimit: 1000000}));
 app.use(express.static('server/public'));
 
+// Get total of lines from a given author:
 app.get('/totals', function(req, res) {
   pool.connect(function (errorConnectingToDb, db, done) {
     if (errorConnectingToDb) {
-      // There was an error and no connection was made
       console.log('Error connecting', errorConnectingToDb);
     } else {
-      // We connected to the db!!!!! pool -1
-      // var queryText = 'SELECT * FROM poems JOIN lines ON poems.id = lines.poem_id WHERE "author"=$1;';
-
       var queryText = 'SELECT SUM(linecount) as count, author FROM poems GROUP BY author;';
       db.query(queryText, [], function (errorMakingQuery, result) {
-        // We have received an error or result at this point
         done(); // pool +1
         if (errorMakingQuery) {
           console.log('Error making query', errorMakingQuery);
         } else {
-          // Send back success!
           res.send(result);
         }
       }); // END QUERY
@@ -51,15 +46,10 @@ app.get('/search/:id', function(req, res) {
 
   pool.connect(function (errorConnectingToDb, db, done) {
     if (errorConnectingToDb) {
-      // There was an error and no connection was made
       console.log('Error connecting', errorConnectingToDb);
     } else {
-      // We connected to the db!!!!! pool -1
-      // var queryText = 'SELECT * FROM poems JOIN lines ON poems.id = lines.poem_id WHERE "author"=$1;';
-
       var queryText = 'SELECT author, array_agg("lines") as all_lines FROM lines JOIN poems on lines.poem_id = poems.id GROUP BY author;';
       db.query(queryText, [], function (errorMakingQuery, result) {
-        // We have received an error or result at this point
         done(); // pool +1
         if (errorMakingQuery) {
           console.log('Error making query', errorMakingQuery);
@@ -72,20 +62,16 @@ app.get('/search/:id', function(req, res) {
   }); // END POOL
 });
 
-// This worked:
+// This worked -- putting all our poems in the Database:
 app.post('/poems', function(req, res) {
   // console.log(req.body);
   var poem = req.body;
   pool.connect(function (errorConnectingToDb, db, done) {
     if (errorConnectingToDb) {
-      // There was an error and no connection was made
       console.log('Error connecting', errorConnectingToDb);
     } else {
-      // We connected to the db!!!!! pool -1
-      // console.log(star, "HI THERE");
       var queryText = 'INSERT INTO "poems" ("author", "title", "linecount") VALUES ($1, $2, $3) RETURNING id as id;';
       db.query(queryText, [poem.author, poem.title, parseInt(poem.linecount)], function (errorMakingQuery, result) {
-        // We have received an error or result at this point
 
         console.log(result.rows[0].id);
         poem.lines.forEach(function(line, index) {

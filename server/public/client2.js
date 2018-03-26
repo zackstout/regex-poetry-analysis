@@ -16,11 +16,37 @@ $(document).ready(function() {
       allAuthors.push(author);
       // $('#list').append('<li>' + row.author + ' has ' + row.count + ' lines in the DB.');
     });
+    console.log(allAuthors);
   });
 
-  // Takes a good 15 seconds to run this monster:
+
+  // Get list of all lines with given line number:
+  $('#allLines').on('click', function() {
+    $('#all-lines').empty();
+    num = parseInt($('#lineNo').val());
+    console.log(num);
+    // $('#all-lines').append();
+
+
+    $.ajax({
+      type: "GET",
+      url: "/lineNumber/" + num
+    }).done(function(res) {
+      console.log(res.rows);
+      
+    }).catch(function(err) {
+      console.log(err);
+    });
+
+  });
+
+
+  // Takes a good 15 seconds to run this monster: // well not really...? 5 ish.
   $('#sub').on('click', function() {
     // var author = $('#author').val();
+
+    // Don't forget to empty out old stuff:
+    $('#list').empty();
     var term = $('#searchTerm').val();
     var count = 0;
     var lines = [];
