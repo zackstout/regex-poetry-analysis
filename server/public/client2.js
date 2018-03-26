@@ -33,7 +33,10 @@ $(document).ready(function() {
       url: "/lineNumber/" + num
     }).done(function(res) {
       console.log(res.rows);
-      
+      res.rows.forEach(function(r) {
+        $('#all-lines').append('<p>' + r.line + '</p>');
+      });
+
     }).catch(function(err) {
       console.log(err);
     });
