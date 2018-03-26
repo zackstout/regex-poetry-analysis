@@ -40,6 +40,37 @@ app.get('/totals', function(req, res) {
   }); // END POOL
 });
 
+app.get('/lineNumber/:id', function(req, res) {
+  console.log(req.params.id);
+
+  pool.connect(function (errorConnectingToDb, db, done) {
+    if (errorConnectingToDb) {
+      console.log('Error connecting', errorConnectingToDb);
+    } else {
+      // it seems to be upset because of capitalization, i.e. col isn't named "lineno"
+      var queryText = 'SELECT line FROM lines WHERE lineNo = $1;';
+      db.query(queryText, [req.params.id], function (errorMakingQuery, result) {
+        done(); // pool +1
+        if (errorMakingQuery) {
+          console.log('Error making query', errorMakingQuery);
+        } else {
+          // Send back success!
+          res.send(result);
+        }
+      }); // END QUERY
+    }
+  }); // END POOL
+});
+
+
+
+
+
+
+
+
+
+
 // we don't need parameter now -- we're going through every row in the lines table.
 app.get('/search/:id', function(req, res) {
   console.log(req.params.id);
